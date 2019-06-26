@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="cache-control" content="no-cache,no-store, must-revalidate" />
+    <meta charset="UTF-8">
+    <title>Audio Recorder</title>
+    <script src="js/audiodisplay.js"></script>
+    <script src="js/recorderjs/recorder.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/vue.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://www.bootcss.com/p/buttons/css/buttons.css">
+
+    <style>
+        canvas {
+            display: inline-block;
+            background: #202020;
+        }
+    </style>
+
+</head>
+
+<body style="background-color: rgb(248, 248, 248)">
+<div class="container-fluid">
+    <div class="row justify-content-center" style="margin-top:20px; margin-left:20px">
+        <div class="col">
+            <h2 style="color: slategray; margin-bottom: 20px">孤立词语音识别系统</h2>
+            <p style="color: rgb(94, 100, 105); font-size: 15px; white-space: pre;">识别范围：数字  语音  语言  识别  中国  总工  北京  背景  上海  商行  复旦  饭店  Speech  Speaker  Signal  Process  Print  Open  Close  Project</p>
+            <p style="color: rgb(94, 100, 105); font-size: 15px">你有2秒时间录音</p>
+        </div>        
+    </div>
+
+    <div class="row" style="margin-left: 20px">
+        <div id="viz" class="col-8">
+            <canvas id="analyser" style="margin-bottom:10px; width: 800px; height: 230px"></canvas>
+            <canvas id="wavedisplay" style="margin-bottom:10px; width: 800px; height: 230px"></canvas>
+        </div>
+
+        <div class="col-4" id="panel">
+            <div class="row" style="margin-left: 15px" id="display" :token="token">
+                <h1 style="color: #4d4b4b">{{ token }}</h1>
+            </div>
+
+            <div id="controls" class="row" style="margin-top: 80px; margin-left: 40px">
+                <button class="btn btn-outline-info btn-lg" id="record" @click="startRecord()"><i class="fas fa-microphone-alt"> 开始录音</i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+        var myVue = new Vue({
+            el: "#panel",
+            data: {
+                tokens: "数字 语音 语言 识别 中国 总工 北京 背景 上海 商行 复旦 饭店 Speech Speaker Signal Process Print Open Close Project".split(' '),
+                process: null,
+                started: false,
+                token: 0,
+                stu_id: "0000",
+            },
+            methods: {
+                setUpToken: function (res) {
+                    this.token = res;
+                },
+                startRecord: function () {
+                    if (window.adplay) {
+                        window.adplay.pause();
+                    }
+                    if (!this.started) {
+                        console.log('record start');
+                        var icon = document.querySelector("#record");
+                        toggleRecording(icon);
+                        this.started = true;
+                        var that = this;
+                        setTimeout(that.endRecord, 2000);
+                    }
+                },
+                endRecord: function () {
+                    console.log('record end');
+                    var icon = document.querySelector('#record');
+                    var m = new Date();
+                    var m = new Date();
+                    var dateString =
+                        m.getFullYear() + "-" +
+                        ("0" + (m.getMonth() + 1)).slice(-2) + "-" +
+                        ("0" + m.getDate()).slice(-2) + "-" +
+                        ("0" + m.getHours()).slice(-2) + "-" +
+                        ("0" + m.getMinutes()).slice(-2) + "-" +
+                        ("0" + m.getSeconds()).slice(-2);
+                    window.filename = dateString;
+                    toggleRecording(icon);
+                    this.started = false;
+                }
+            },
+            created: function () {
+                this.token = "录音结果..."
+            },
+            watch: {
+                current: function () {
+                    this.token = window.token;
+                }
+            }
+        });
+        window.myVue = myVue;
+    </script>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+save.ptr存放训练的模型参数，使用命令python cnn_melspec.py --nepoch 10 --save trained/save.ptr生成
